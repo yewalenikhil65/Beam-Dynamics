@@ -1,5 +1,5 @@
-1) Code for linear damped Euler-bernoulli beam (uncontrolled)
-
+ Code for linear damped Euler-bernoulli beam (uncontrolled). Physical Parameters, ICs and BCs for the beam based on [paper](https://journals.sagepub.com/doi/10.1243/09596518JSCE688) 
+ 
 - Install `Julia 1.6` from https://julialang.org/downloads/
 - Important packages to be imported
 - `] add DifferentialEquations`
