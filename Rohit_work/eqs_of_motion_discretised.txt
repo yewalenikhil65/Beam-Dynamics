@@ -1,0 +1,59 @@
+  -2      -1              [0 ,1 ,2, 3......n-2, n-1, n]                          n+1    n+2
+  Pseudo nodes          Real Nodes in Simply supported beam                    Pseudo  nodes   
+
+'i' here is an index on space... u[x,t] will be written as u[x] only as we only discretise in space 
+
+-------------- Finite difference discretisation of D^4 operator and BCs ------------------------
+D^4[i] = (u[i-2] - 4u[i-1] + 6u[i] - 4u[i+1] + u[i+2])/(Δx^4)          (second order accuracy.. Central-Difference)
+D^2[i] = (u[i-1] - 2u[i] + u[i+1])/(Δx^2)                              (second order accuracy.. Central-Difference)
+
+
+u[-1,t] = -u[1,t]......        			Derived from Moment-Zero at i = 0 
+u[n-1,t] = -u[n+1,t]....			Derived from Moment-Zero at i = n
+u[0] = 0 = u[n]  ...... 			0 and n are first and end nodes..deflection is zero
+
+D^4[i = 0] = 0 
+D^4[i = 1] = ( 5u[1] - 4u[2] + u[3] )/(Δx^4)
+D^4[i = 2] = ( -4u[1] + 6u[2] - 4u[3] + u[4] )/(Δx^4)
+
+..............
+D^4[i = n-2] = ( u[n-4] - 4u[n-3] + 6u[n-2] - 4u[n-1] )/(Δx^4)
+D^4[i = n-1] = ( u[n-3] - 4u[n-2] + 5u[n-1] )/(Δx^4)
+D^4[i = n] = 0
+
+
+.........................................................
+
+
+Converting IBVP problem now to only IVP
+m u'' + cu' + EI( (u[i-2] - 4u[i-1] + 6u[i] - 4u[i+1] + u[i+2])/(Δx^4) ) == 0
+
+(at i = 0 )     [ m u''[0] + cu'[0] ] == 0
+(at i = 1 )     [ m u''[1] + cu'[1] + EI (5u[1] - 4u[2] + u[3])/(Δx^4) ] == 0 
+(at i = 2)      [ m u''[2] + cu'[2] + EI (-4u[1] + 6u[2] - 4u[3] + u[4])/(Δx^4) ] == 0
+...............
+(at i = n-2)    [ m u''[n-2] + cu'[n-2] + EI (-4u[n-3] + 6u[n-2] - 4u[n-1] + u[n])/(Δx^4) ] ==0 
+(at i = n-1)    [ m u''[n-1] + cu'[n-1] + EI (u[n-3] - 4u[n-2] + 5u[n-1])/(Δx^4) ] == 0
+(at i = n)      [ m u''[n] + cu'[n] ] == 0
+
+-------------------------------------let n=9,, so internal nodes are n=1 to 8-------------------
+rewriting eqns of motion for internal nodes (n=1:8), i.e. u = [u1 ,u2,...,u7 ,u8]
+
+  [1 0 0 0 0 0 0 0]                  [5  -4   1   0   0  0  0  0]       [1 0 0 0 0 0 0 0]
+  [0 1 0 0 0 0 0 0]                  [-4  6  -4   1   0  0  0  0]       [0 1 0 0 0 0 0 0]
+m [0 0 1 0 0 0 0 0] u'' +  (EI/Δx^4 )[1  -4   6  -4   1  0  0  0] u  + c[0 0 1 0 0 0 0 0] u'  == 0
+  [0 0 0 1 0 0 0 0]                  [0   1  -4   6  -4  1  0  0]       [0 0 0 1 0 0 0 0]
+  [0 0 0 0 1 0 0 0]                  [0   0   1  -4   6 -4  1  0]       [0 0 0 0 1 0 0 0] 
+  [0 0 0 0 0 1 0 0]                  [0   0   0   1  -4  6 -4  1]       [0 0 0 0 0 1 0 0]
+  [0 0 0 0 0 0 1 0]                  [0   0   0   0   1 -4  6 -4]       [0 0 0 0 0 0 1 0]
+  [0 0 0 0 0 0 0 1]                  [0   0   0   0   0  1 -4  5]       [0 0 0 0 0 0 0 1]
+
+[mI] u'' + [cI] u' + [K] u == 0
+or 
+u'' = -[mI]\[K]u - [mI]\[cI] u'
+...........................................................
+
+So lets re-write as state-space system ..Let u = V..
+D/Dt [V]  =  [0                     I] [V]
+     [V']    [-[mI]\[K]    -[mI]\[cI]] [V']
+
