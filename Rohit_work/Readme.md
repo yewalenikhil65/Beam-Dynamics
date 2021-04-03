@@ -68,3 +68,4 @@ surface(sol.t, x_nonBC, sol_u)
 
 
 ```
+![image](https://user-images.githubusercontent.com/26343789/113482518-b2d50700-94bc-11eb-9448-40cb82952cf3.png)
